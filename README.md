@@ -78,6 +78,20 @@ pip install dgl torch scikit-learn pandas numpy
    next_location = system.predict(current_data_point)
    ```
 
+4. **Uso da Função de Perda Haversine:**:
+
+   ```python
+   from haversine_loss import haversine_loss
+
+   # Ponto de previsão e ponto real (latitude, longitude)
+   predicted_point = (64.844444, -147.777777)  # Latitude, Longitude previsto
+   actual_point = (64.8333333, -147.7666666)    # Latitude, Longitude real
+
+   # Calcular a perda (distância geográfica)
+   loss = haversine_loss(predicted_point, actual_point)
+   print(f"Perda Haversine: {loss} km")
+   ```
+
 ### Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
