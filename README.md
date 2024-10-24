@@ -1,12 +1,12 @@
 
 # Fuzzy Adventure
-# Previsão de Localização Baseada em Dados Geoespaciais e Temporais
+## Previsão de Localização Baseada em Dados Geoespaciais e Temporais
 
-## Descrição
+### Descrição
 
 Este projeto utiliza um conjunto de dados contendo coordenadas geográficas (latitude, longitude) e timestamps para prever a próxima localização provável de uma pessoa. A solução foi projetada para capturar padrões espaciais e temporais utilizando várias abordagens de modelagem, incluindo Cadeias de Markov, Clustering Não Supervisionado e Redes Neurais Baseadas em Grafos (GNN-LSTM).
 
-## Abordagens Utilizadas
+### Abordagens Utilizadas
 
 1. **Cadeia de Markov**:
    - Modela as probabilidades de transição entre localizações consecutivas.
@@ -23,7 +23,7 @@ Este projeto utiliza um conjunto de dados contendo coordenadas geográficas (lat
 4. **Atualização Dinâmica do Grafo**:
    - Detecção de anomalias em padrões de movimentação e atualização do grafo com novos nós quando detectadas novas localizações.
 
-## Estrutura do Projeto
+### Estrutura do Projeto
 
 - `location_prediction_system.py`: Implementação das classes principais do sistema de previsão.
 - `markov_model.py`: Implementação do modelo de Cadeia de Markov.
@@ -31,7 +31,7 @@ Este projeto utiliza um conjunto de dados contendo coordenadas geográficas (lat
 - `gnn_lstm_model.py`: Implementação da Rede Neural Baseada em Grafos com LSTM.
 - `haversine_loss.py`: Implementação da função de perda baseada na distância geográfica.
 
-## Dependências
+### Dependências
 
 - Python 3.8+
 - DGL (Deep Graph Library)
@@ -40,13 +40,13 @@ Este projeto utiliza um conjunto de dados contendo coordenadas geográficas (lat
 - Pandas
 - NumPy
 
-### Instalação
+#### Instalação
 
 ```bash
 pip install dgl torch scikit-learn pandas numpy
 ```
 
-## Uso
+### Uso
 
 1. **Criação do Sistema de Previsão**:
 
@@ -78,10 +78,10 @@ pip install dgl torch scikit-learn pandas numpy
    next_location = system.predict(current_data_point)
    ```
 
-## Contribuição
+### Contribuição
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
 
-## Licença
+### Licença
 
 Este projeto é licenciado sob a licença MIT.
