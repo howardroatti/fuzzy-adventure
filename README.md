@@ -42,9 +42,7 @@ Este projeto utiliza um conjunto de dados contendo coordenadas geográficas (lat
 
 #### Instalação
 
-```bash
-pip install dgl torch scikit-learn pandas numpy
-```
+`pip install -r` [requirements.txt](src/requirements.txt)
 
 ### Uso
 
