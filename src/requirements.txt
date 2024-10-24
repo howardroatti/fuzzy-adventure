@@ -1,0 +1,12 @@
+# Bibliotecas principais
+numpy==1.23.5
+pandas==2.1.1
+scikit-learn==1.3.0
+
+# Frameworks de redes neurais e grafos
+torch==2.0.1
+dgl==1.1.0
+
+# Outras dependências
+matplotlib==3.7.2
+tqdm==4.65.0
