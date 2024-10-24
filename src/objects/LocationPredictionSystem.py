@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from sklearn.preprocessing import StandardScaler
 
 from objects import *
-from objects.GNNLSTMModel import train_gnn_lstm
+from objects.gnn_lstm_model import train_gnn_lstm
 
 class LocationPredictionSystem:
     def __init__(self, method='gnn'):

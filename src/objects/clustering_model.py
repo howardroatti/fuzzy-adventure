@@ -1,5 +1,5 @@
 from sklearn.cluster import DBSCAN
-from MarkovModel import MarkovModel
+from objects.markov_model import MarkovModel
 
 class ClusteringModel:
     def __init__(self, eps=0.01, min_samples=5):
