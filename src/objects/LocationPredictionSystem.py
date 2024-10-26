@@ -9,6 +9,21 @@ from objects import *
 from objects.gnn_lstm_model import train_gnn_lstm, verify_data_integrity
 
 class LocationPredictionSystem:
+    """
+    Classe para previsão de localização baseada em diferentes métodos de aprendizado de máquina.
+
+    Esta classe suporta métodos de previsão como Markov, clustering e GNN (Rede Neural de Grafo). 
+    O sistema é capaz de ajustar modelos aos dados de entrada e fazer previsões baseadas em pontos de dados atuais.
+
+    Atributos:
+        method (str): O método de previsão utilizado ('markov', 'clustering' ou 'gnn').
+        scaler (StandardScaler): Escalonador utilizado para normalizar as características de entrada.
+        model: Modelo de aprendizado de máquina correspondente ao método escolhido.
+
+    Métodos:
+        fit(data): Treina o modelo selecionado com os dados de entrada.
+        predict(current_data_point): Realiza previsões de localização com base no ponto de dados atual.
+    """
     def __init__(self, method='gnn'):
         self.method = method
         self.scaler = StandardScaler()  # Escalonador para as coordenadas
@@ -21,6 +36,22 @@ class LocationPredictionSystem:
             self.model = None  # Será instanciado durante o treinamento
 
     def fit(self, data):
+        """
+        Ajusta o modelo de previsão com os dados de entrada fornecidos.
+
+        Dependendo do método de previsão selecionado, o método pode treinar um modelo Markov ou de clustering, 
+        ou um modelo GNN, criando o grafo necessário e escalonando as características dos dados de entrada.
+
+        Parâmetros:
+            data (list): Lista de dicionários contendo informações de localização, onde cada dicionário deve 
+                        incluir os campos 'coordinate_latitude', 'coordinate_longitude' e 'time'.
+
+        Levanta:
+            ValueError: Se o número de nós no grafo não corresponder ao número de características.
+        
+        Retorno:
+            None
+        """
         if self.method == 'markov' or self.method == 'clustering':
             self.model.fit(data)
         elif self.method == 'gnn':
@@ -134,6 +165,32 @@ class LocationPredictionSystem:
         return graph_data, features, labels
 
     def predict(self, current_data_point):
+        """
+        Realiza previsões de localização com base em um ponto de dados atual.
+
+        O método utiliza o modelo treinado para prever a próxima localização (coordenadas) a partir 
+        das coordenadas atuais e das características temporais associadas. Dependendo do método de 
+        previsão selecionado, pode usar um modelo Markov, clustering ou GNN.
+
+        Parâmetros:
+            current_data_point (dict): Dicionário contendo as informações da localização atual, 
+                                        com os campos 'coordinate_latitude', 'coordinate_longitude' e 'time'.
+
+        Retorno:
+            list: Lista contendo as coordenadas previstas da próxima localização.
+
+        Levanta:
+            ValueError: Se as características dos nós não foram inicializadas ou se o método selecionado 
+                        não possui um modelo treinado.
+
+        Exemplo:
+            >>> current_point = {
+            >>>     'coordinate_latitude': 40.7128,
+            >>>     'coordinate_longitude': -74.0060,
+            >>>     'time': '2024-10-25T12:00:00'
+            >>> }
+            >>> predicted_coords = location_predictor.predict(current_point)
+        """
         if self.method == 'markov' or self.method == 'clustering':
             return self.model.predict(np.array([[current_data_point['coordinate_latitude'], current_data_point['coordinate_longitude']]]))
         elif self.method == 'gnn':
@@ -196,6 +253,31 @@ class LocationPredictionSystem:
                 raise ValueError("As características dos nós não foram inicializadas. Treine o modelo antes de prever.")
 
 def haversine_loss(predicted_coords, true_coords):
+    """
+    Calcula a perda de Haversine entre coordenadas previstas e reais.
+
+    A função utiliza a fórmula de Haversine para calcular a distância geográfica 
+    entre dois pontos na superfície da Terra, especificados por suas coordenadas 
+    de latitude e longitude. A perda é definida como a média das distâncias 
+    calculadas entre as coordenadas previstas e as verdadeiras.
+
+    Parâmetros:
+        predicted_coords (torch.Tensor): Tensor de formato (N, 2) contendo as coordenadas previstas,
+                                          onde N é o número de pontos previstos e cada ponto é uma 
+                                          tupla de (latitude, longitude).
+        true_coords (torch.Tensor): Tensor de formato (N, 2) contendo as coordenadas reais, onde 
+                                    N é o número de pontos verdadeiros e cada ponto é uma tupla de 
+                                    (latitude, longitude).
+
+    Retorno:
+        torch.Tensor: Um tensor escalar representando a perda média de Haversine entre as coordenadas 
+                      previstas e verdadeiras.
+
+    Exemplo:
+        >>> pred_coords = torch.tensor([[40.7128, -74.0060]])
+        >>> true_coords = torch.tensor([[34.0522, -118.2437]])
+        >>> loss = haversine_loss(pred_coords, true_coords)
+    """
     # Implementar a fórmula de Haversine para calcular a distância geográfica
     R = 6371  # Raio da Terra em km
     lat1, lon1 = predicted_coords[:, 0], predicted_coords[:, 1]

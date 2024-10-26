@@ -4,7 +4,32 @@ import dgl
 from dgl.nn import GraphConv
 
 class GNNLSTMModel(nn.Module):
+    """
+    Modelo de rede neural que combina uma Rede Neural Gráfica (GNN) e uma LSTM para previsão de classes em dados estruturados como grafos.
+
+    Este modelo aplica uma sequência de camadas de convolução gráfica para extrair características dos dados do grafo 
+    e, em seguida, utiliza uma LSTM para capturar dependências temporais nas representações extraídas. 
+
+    Atributos:
+        input_proj (nn.Linear): Camada linear que projeta as características de entrada para o tamanho oculto.
+        gnn_layers (ModuleList): Lista de camadas de convolução gráfica (GraphConv).
+        lstm (nn.LSTM): Camada LSTM para processar as características extraídas das GNNs.
+        fc (nn.Linear): Camada de saída que mapeia as saídas da LSTM para as classes previstas.
+        dropout (nn.Dropout): Camada de dropout para regularização.
+
+    Métodos:
+        forward(g, features): Realiza a passagem direta do modelo para calcular as previsões a partir do grafo e características.
+    """
     def __init__(self, in_feats, hidden_size, num_classes, num_layers=2):
+        """
+        Inicializa o modelo GNN-LSTM com as dimensões e parâmetros especificados.
+
+        Parâmetros:
+            in_feats (int): Número de características de entrada.
+            hidden_size (int): Tamanho da camada oculta.
+            num_classes (int): Número de classes de saída.
+            num_layers (int, opcional): Número de camadas GNN. Padrão é 2.
+        """
         super(GNNLSTMModel, self).__init__()
         
         self.input_proj = nn.Linear(in_feats, hidden_size)
@@ -23,6 +48,16 @@ class GNNLSTMModel(nn.Module):
         self.dropout = nn.Dropout(0.2)
 
     def forward(self, g, features):
+        """
+        Realiza a passagem direta do modelo para calcular as previsões a partir do grafo e características.
+
+        Parâmetros:
+            g (dgl.DGLGraph): O grafo de entrada com suas conexões.
+            features (torch.Tensor): Tensor com as características dos nós do grafo.
+
+        Retorno:
+            torch.Tensor: Tensor contendo as previsões para cada nó do grafo, com formato [batch_size, num_classes].
+        """
         # Projetar características
         h = self.input_proj(features)
         
@@ -47,6 +82,22 @@ class GNNLSTMModel(nn.Module):
         return out
 
 def train_gnn_lstm(graph_data, features, labels, num_epochs=100):
+    """
+    Treina um modelo GNN-LSTM utilizando dados de grafo e características associadas.
+
+    Este método realiza a passagem de treinamento do modelo GNN-LSTM, incluindo a inicialização do modelo, 
+    otimização e monitoramento do desempenho. O treinamento é realizado por um número especificado de épocas, 
+    com implementação de early stopping para evitar overfitting.
+
+    Parâmetros:
+        graph_data (dgl.DGLGraph): O grafo de entrada que contém a estrutura e as arestas entre os nós.
+        features (torch.Tensor): Tensor contendo as características dos nós do grafo.
+        labels (torch.Tensor): Tensor contendo os rótulos correspondentes para cada nó.
+        num_epochs (int, opcional): O número de épocas para treinamento. O padrão é 100.
+
+    Retorno:
+        GNNLSTMModel: O modelo treinado, pronto para fazer previsões.
+    """
     print("\nInformações do dataset:")
     print(f"Número de nós: {features.size(0)}")
     print(f"Número de features: {features.size(1)}")
@@ -131,6 +182,21 @@ def train_gnn_lstm(graph_data, features, labels, num_epochs=100):
 
 # Função auxiliar para verificar dados
 def verify_data_integrity(features, labels, graph):
+    """
+    Verifica a integridade dos dados de entrada, incluindo características, rótulos e estrutura do grafo.
+
+    Este método imprime informações sobre as dimensões das características e rótulos, além do número de nós 
+    e arestas no grafo. Ele também verifica se existem valores NaN nas características ou rótulos e imprime 
+    avisos se forem encontrados.
+
+    Parâmetros:
+        features (torch.Tensor): Tensor contendo as características dos nós do grafo.
+        labels (torch.Tensor): Tensor contendo os rótulos correspondentes para cada nó.
+        graph (dgl.DGLGraph): O grafo cujas informações de integridade estão sendo verificadas.
+
+    Retorno:
+        None
+    """
     print("\nVerificando integridade dos dados:")
     print(f"Features shape: {features.shape}")
     print(f"Labels shape: {labels.shape}")
